@@ -36,6 +36,9 @@ const TaskBoard: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedSite, setSelectedSite] = useState<string>('');
   const [selectedTeam, setSelectedTeam] = useState<string>('全て');
+  // 追加: モーダル用 state
+  const [selectedTask, setSelectedTask] = useState<ScheduledEvent | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   // 説明.mdボタン
   const handleOpenDescription = () => {
@@ -167,16 +170,26 @@ const TaskBoard: React.FC = () => {
       {error && <p className={styles.error}>エラーが発生しました：{error}</p>}
 
       {!loading && !error && (
-        <div style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
-          <Carousel groupedTasks={groupedTasks} />
-          <SummaryPanel groupedTasks={groupedTasks} />
-        </div>
+        <>
+          <div style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
+            <Carousel groupedTasks={groupedTasks} onTaskClick={(task) => { setSelectedTask(task); setShowModal(true); }} />
+            <SummaryPanel groupedTasks={groupedTasks} />
+          </div>
+          {showModal && selectedTask && (
+            <TaskDetailModal task={selectedTask} onClose={() => setShowModal(false)} />
+          )}
+        </>
       )}
     </div>
   );
 };
 
-const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) => {
+type CarouselProps = {
+  groupedTasks: GroupedTasks;
+  onTaskClick: (task: ScheduledEvent) => void;
+};
+
+const Carousel: React.FC<CarouselProps> = ({ groupedTasks, onTaskClick }) => {
   const assignees = Object.keys(groupedTasks);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -217,6 +230,9 @@ const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) =>
                   <li
                     key={task.EventId}
                     className={styles.taskItem}
+                    onClick={() => onTaskClick(task)}
+                    style={{ cursor: 'pointer' }}
+                    title="クリックで詳細"
                   >
                     <span className={styles.machineName}>{task.MachineName || '(設備名なし)'}</span><br />
                     <span className={styles.taskTitle}>{task.ScheduledMaintenance?.Title || '(タイトルなし)'}</span><br />
@@ -235,6 +251,88 @@ const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) =>
           className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
         >▶</button>
       )}
+    </div>
+  );
+};
+// --- タスク詳細モーダル ---
+interface TaskDetailModalProps {
+  task: ScheduledEvent;
+  onClose: () => void;
+}
+
+const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, onClose }) => {
+  const checkItem = task.ScheduledMaintenance?.CheckItem ?? '';
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0,0,0,0.45)',
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: '#232526',
+          color: '#fff',
+          borderRadius: 12,
+          minWidth: 320,
+          maxWidth: 400,
+          padding: '2rem 2.2rem',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+          position: 'relative',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 16,
+            background: 'none',
+            border: 'none',
+            color: '#fff',
+            fontSize: 22,
+            cursor: 'pointer',
+          }}
+          aria-label="閉じる"
+        >×</button>
+        <h2 style={{ color: '#00c6fb', fontSize: '1.3rem', marginBottom: 16, textAlign: 'center' }}>
+          {task.ScheduledMaintenance?.Title || '(タイトルなし)'}
+        </h2>
+        <div style={{ marginBottom: 10 }}>
+          <strong>機械名：</strong> {task.MachineName || '(設備名なし)'}
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <strong>点検項目：</strong> {checkItem || 'ー'}
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <strong>期限：</strong> {new Date(task.DueDate).toLocaleDateString()}
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <strong>担当者：</strong> {task.AssigneesDisplayName || '未割当'}
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <strong>チーム：</strong> {task.AssigneesGroupName || '未所属'}
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <strong>拠点：</strong> {task.SiteName || 'ー'}
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <strong>ステータス：</strong> {task.Status}
+        </div>
+        <div style={{ fontSize: 12, color: '#b2bec3', marginTop: 18, textAlign: 'center' }}>
+          画面外クリックまたは「×」で閉じる
+        </div>
+      </div>
     </div>
   );
 };
