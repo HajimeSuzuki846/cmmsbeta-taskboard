@@ -49,11 +49,13 @@ const TaskBoard: React.FC = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          '/odata/published_odata_service_team/v1/Teams?$expand=Team_Sites'
+          'https://wminkbl9l6.execute-api.us-west-2.amazonaws.com/prod/team'
         );
-        const data = await response.json();
+        const rawData  = await response.json();
+        const parsed = JSON.parse(rawData.body);
+
         const siteSet = new Set<string>();
-        const validTeams = data.value.filter((team: Team) => team.Team_Sites?.SiteNameCaption);
+        const validTeams = parsed.value.filter((team: Team) => team.Team_Sites?.SiteNameCaption);
         validTeams.forEach((team: Team) => siteSet.add(team.Team_Sites.SiteNameCaption));
 
         setSites(Array.from(siteSet));
@@ -75,15 +77,22 @@ const TaskBoard: React.FC = () => {
     const fetchTasks = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          '/odata/published_odata_service_scheduledevents/v1/ScheduledEvents?$expand=ScheduledMaintenance'
-        );
+        const nowDate = new Date();
+        const nowMonth = nowDate.getMonth() + 1; // JavaScriptは0-indexのため+1
+        const nowYear = nowDate.getFullYear();
+
+        const siteNameParam = encodeURIComponent(selectedSite); // '北本' → '%E5%8C%97%E6%9C%AC'
+        const url = `https://wminkbl9l6.execute-api.us-west-2.amazonaws.com/prod/tasks?SiteName=${siteNameParam}&Month=${nowMonth}&Year=${nowYear}`;
+        const response = await fetch(url);
+
 
         if (!response.ok) {
           throw new Error(`APIエラー: ステータスコード ${response.status}`);
         }
 
-        const data = await response.json();
+        const rawData2 = await response.json();
+        //const data = JSON.parse(rawData2.body);
+        const data = rawData2;
         const now = new Date();
         const thisMonth = now.getMonth();
         const thisYear = now.getFullYear();
