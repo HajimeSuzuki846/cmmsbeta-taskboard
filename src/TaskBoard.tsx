@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 type ScheduledMaintenance = {
   ID: number;
   Title: string;
-  TitleAndCheckItem: string;
+  CheckItem: string;
 };
 
 type ScheduledEvent = {
@@ -113,6 +113,12 @@ const TaskBoard: React.FC = () => {
     fetchTasks();
   }, [selectedSite, selectedTeam]);
 
+  // 期限（今月）をページタイトルに追加
+  const now = new Date();
+  const thisMonth = now.getMonth() + 1;
+  const thisYear = now.getFullYear();
+  const monthTitle = `${thisYear}年${thisMonth}月`;
+
   return (
     <div style={{ padding: '1rem', fontFamily: 'sans-serif', position: 'relative' }}>
       {/* 画面説明ボタン */}
@@ -133,7 +139,7 @@ const TaskBoard: React.FC = () => {
         画面説明
       </button>
 
-      <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>当月の未完了タスク</h1>
+      <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>当月の未完了タスク（{monthTitle}）</h1>
 
       <label>
         拠点選択：
@@ -211,22 +217,32 @@ const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) =>
               {assignee}
             </h2>
             <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-              {groupedTasks[assignee].map((task) => (
-                <li
-                  key={task.EventId}
-                  style={{
-                    background: '#fff',
-                    padding: '0.5rem',
-                    margin: '0.5rem 0',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px'
-                  }}
-                >
-                  <strong>{task.ScheduledMaintenance?.Title || '(タイトルなし)'}</strong><br />
-                  機械: {task.MachineName}<br />
-                  期限: {new Date(task.DueDate).toLocaleDateString()}
-                </li>
-              ))}
+              {groupedTasks[assignee].map((task) => {
+                const checkItem = task.ScheduledMaintenance?.CheckItem ?? null;
+                let checkItemDisplay = 'ー';
+                if (checkItem) {
+                  // APIの"CheckItem"がCheckItemに含まれている前提で分割
+                  // 例: "タイトル: チェック項目" の場合
+                  const parts = checkItem.split(':');
+                  checkItemDisplay = parts.length > 1 ? parts[1].trim() : checkItem;
+                }
+                return (
+                  <li
+                    key={task.EventId}
+                    style={{
+                      background: '#fff',
+                      padding: '0.5rem',
+                      margin: '0.5rem 0',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px'
+                    }}
+                  >
+                    <strong>{task.MachineName || '(設備名なし)'}</strong><br />
+                    {task.ScheduledMaintenance?.Title || '(タイトルなし)'}<br />
+                    点検項目: {checkItemDisplay}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
