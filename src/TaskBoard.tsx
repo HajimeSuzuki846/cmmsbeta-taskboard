@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import noTaskImage from './image/87a88a59-d062-4e5d-86f0-f2568db58da1.png';
 import styles from './TaskBoard.module.css';
 // 型定義
 type ScheduledMaintenance = {
@@ -180,12 +181,21 @@ const TaskBoard: React.FC = () => {
 
       {!loading && !error && (
         <>
-          <div style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
-            <Carousel groupedTasks={groupedTasks} onTaskClick={(task) => { setSelectedTask(task); setShowModal(true); }} />
-            <SummaryPanel groupedTasks={groupedTasks} />
-          </div>
-          {showModal && selectedTask && (
-            <TaskDetailModal task={selectedTask} onClose={() => setShowModal(false)} />
+          {Object.keys(groupedTasks).length === 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', width: '100%' }}>
+              <img src={noTaskImage} alt="タスクなし" style={{ maxWidth: 480, width: '60vw', marginBottom: 32, opacity: 0.92, transition: 'all 0.3s' }} />
+              <div style={{ color: '#888', fontSize: 22, textAlign: 'center', fontWeight: 500 }}>今月の未完了タスクはありません</div>
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
+                <Carousel groupedTasks={groupedTasks} onTaskClick={(task) => { setSelectedTask(task); setShowModal(true); }} />
+                <SummaryPanel groupedTasks={groupedTasks} />
+              </div>
+              {showModal && selectedTask && (
+                <TaskDetailModal task={selectedTask} onClose={() => setShowModal(false)} />
+              )}
+            </>
           )}
         </>
       )}
