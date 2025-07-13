@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import styles from './TaskBoard.module.css';
 // 型定義
 type ScheduledMaintenance = {
   ID: number;
@@ -78,7 +78,6 @@ const TaskBoard: React.FC = () => {
 
         if (!response.ok) {
           throw new Error(`APIエラー: ステータスコード ${response.status}`);
-
         }
 
         const data = await response.json();
@@ -120,58 +119,52 @@ const TaskBoard: React.FC = () => {
   const monthTitle = `${thisYear}年${thisMonth}月`;
 
   return (
-    <div style={{ padding: '1rem', fontFamily: 'sans-serif', position: 'relative' }}>
+    <div className={styles.root}>
       {/* 画面説明ボタン */}
       <button
         onClick={handleOpenDescription}
-        style={{
-          position: 'absolute',
-          top: '1rem',
-          right: '1rem',
-          padding: '0.5rem 1rem',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
+        className={styles.descriptionButton}
       >
         画面説明
       </button>
 
-      <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>当月の未完了タスク（{monthTitle}）</h1>
+      <h1 className={styles.title}>
+        当月の未完了タスク（{monthTitle}）
+      </h1>
 
-      <label>
-        拠点選択：
-        <select
-          value={selectedSite}
-          onChange={(e) => setSelectedSite(e.target.value)}
-          style={{ marginLeft: '0.5rem', marginBottom: '1rem' }}
-        >
-          {sites.map(site => (
-            <option key={site} value={site}>{site}</option>
-          ))}
-        </select>
-      </label>
-
-      <label style={{ marginLeft: '1rem' }}>
-        チーム選択：
-        <select
-          value={selectedTeam}
-          onChange={(e) => setSelectedTeam(e.target.value)}
-          style={{ marginLeft: '0.5rem', marginBottom: '1rem' }}
-        >
-          <option value="全て">全て</option>
-          {teams
-            .filter(team => team.Team_Sites.SiteNameCaption === selectedSite)
-            .map(team => (
-              <option key={team.ID} value={team.Name}>{team.Name}</option>
+      <div className={styles.selectRow}>
+        <label className={styles.siteLabel}>
+          拠点選択：
+          <select
+            value={selectedSite}
+            onChange={(e) => setSelectedSite(e.target.value)}
+            className={styles.select}
+          >
+            {sites.map(site => (
+              <option key={site} value={site}>{site}</option>
             ))}
-        </select>
-      </label>
+          </select>
+        </label>
 
-      {loading && <p>読み込み中...</p>}
-      {error && <p style={{ color: 'red', fontWeight: 'bold' }}>エラーが発生しました：{error}</p>}
+        <label className={styles.teamLabel}>
+          チーム選択：
+          <select
+            value={selectedTeam}
+            onChange={(e) => setSelectedTeam(e.target.value)}
+            className={styles.select}
+          >
+            <option value="全て">全て</option>
+            {teams
+              .filter(team => team.Team_Sites.SiteNameCaption === selectedSite)
+              .map(team => (
+                <option key={team.ID} value={team.Name}>{team.Name}</option>
+              ))}
+          </select>
+        </label>
+      </div>
+
+      {loading && <p className={styles.loading}>読み込み中...</p>}
+      {error && <p className={styles.error}>エラーが発生しました：{error}</p>}
 
       {!loading && !error && (
         <div style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
@@ -183,7 +176,6 @@ const TaskBoard: React.FC = () => {
   );
 };
 
-// Carousel
 const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) => {
   const assignees = Object.keys(groupedTasks);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -196,50 +188,39 @@ const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) =>
   const handleNext = () => setCurrentIndex((prev) => Math.min(prev + 1, assignees.length - 4));
 
   return (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'nowrap', flex: 1, minHeight: '350px', marginRight: '120px', position: 'relative' }}>
+    <div className={styles.carousel}>
       {assignees.length > 4 && (
-        <button onClick={handlePrev} disabled={currentIndex === 0} style={{ height: '40px', position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)' }}>◀</button>
+        <button
+          onClick={handlePrev}
+          disabled={currentIndex === 0}
+          className={`${styles.carouselButton} ${styles.carouselButtonLeft}`}
+        >◀</button>
       )}
-      <div style={{ display: 'flex', gap: '1rem', flex: 1 }}>
+      <div style={{ display: 'flex', gap: '2rem', flex: 1 }}>
         {visibleAssignees.map((assignee) => (
           <div
             key={assignee}
-            style={{
-              border: '1px solid #ccc',
-              padding: '1rem',
-              borderRadius: '8px',
-              minWidth: '250px',
-              background: '#f9f9f9',
-              flex: '0 0 250px'
-            }}
+            className={styles.card}
           >
-            <h2 style={{ fontSize: '1.2rem', borderBottom: '1px solid #aaa', paddingBottom: '0.5rem' }}>
+            <h2 className={styles.cardTitle}>
               {assignee}
             </h2>
-            <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+            <ul className={styles.taskList}>
               {groupedTasks[assignee].map((task) => {
                 const checkItem = task.ScheduledMaintenance?.CheckItem ?? null;
                 let checkItemDisplay = 'ー';
                 if (checkItem) {
-                  // APIの"CheckItem"がCheckItemに含まれている前提で分割
-                  // 例: "タイトル: チェック項目" の場合
                   const parts = checkItem.split(':');
                   checkItemDisplay = parts.length > 1 ? parts[1].trim() : checkItem;
                 }
                 return (
                   <li
                     key={task.EventId}
-                    style={{
-                      background: '#fff',
-                      padding: '0.5rem',
-                      margin: '0.5rem 0',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px'
-                    }}
+                    className={styles.taskItem}
                   >
-                    <strong>{task.MachineName || '(設備名なし)'}</strong><br />
-                    {task.ScheduledMaintenance?.Title || '(タイトルなし)'}<br />
-                    点検項目: {checkItemDisplay}
+                    <span className={styles.machineName}>{task.MachineName || '(設備名なし)'}</span><br />
+                    <span className={styles.taskTitle}>{task.ScheduledMaintenance?.Title || '(タイトルなし)'}</span><br />
+                    <span className={styles.checkItem}>点検項目: {checkItemDisplay}</span>
                   </li>
                 );
               })}
@@ -248,31 +229,25 @@ const Carousel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) =>
         ))}
       </div>
       {assignees.length > 4 && (
-        <button onClick={handleNext} disabled={currentIndex >= assignees.length - 4} style={{ height: '40px', position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>▶</button>
+        <button
+          onClick={handleNext}
+          disabled={currentIndex >= assignees.length - 4}
+          className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
+        >▶</button>
       )}
     </div>
   );
 };
 
-// SummaryPanel
 const SummaryPanel: React.FC<{ groupedTasks: GroupedTasks }> = ({ groupedTasks }) => {
   return (
-    <div style={{
-      minWidth: '90px',
-      maxWidth: '120px',
-      borderLeft: '2px solid #eee',
-      padding: '0.5rem',
-      background: '#f4f4f4',
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      height: '100%'
-    }}>
-      <h3 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>担当者サマリー</h3>
-      <ul style={{ listStyle: 'none', paddingLeft: 0, fontSize: '0.85rem' }}>
+    <div className={styles.summaryPanel}>
+      <h3 className={styles.summaryTitle}>担当者サマリー</h3>
+      <ul className={styles.summaryList}>
         {Object.entries(groupedTasks).map(([assignee, tasks]) => (
-          <li key={assignee} style={{ marginBottom: '0.3rem' }}>
-            <strong>{assignee}</strong>：{tasks.length}件
+          <li key={assignee} className={styles.summaryAssignee}>
+            <span className={styles.summaryAssigneeName}>{assignee}</span><br />
+            <span className={styles.summaryTaskCount}>{tasks.length}件</span>
           </li>
         ))}
       </ul>

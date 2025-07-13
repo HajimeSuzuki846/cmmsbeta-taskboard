@@ -1,0 +1,228 @@
+/* TaskBoard.module.css */
+
+.root {
+  padding: 2rem;
+  font-family: 'Segoe UI', 'Meiryo', sans-serif;
+  position: relative;
+  min-height: 100vh;
+  background: #232526;
+  color: #f1f1f1;
+  transition: background 0.3s;
+}
+
+.descriptionButton {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.7rem 1.5rem;
+  background: #222;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+}
+
+.title {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+.selectRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.siteLabel {
+  font-weight: bold;
+  color: #00c6fb;
+}
+
+.teamLabel {
+  margin-left: 2rem;
+  font-weight: bold;
+  color: #00c6fb;
+}
+
+.select {
+  margin-left: 0.5rem;
+  margin-bottom: 0;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  font-size: 1rem;
+  background: #232526;
+  color: #fff;
+  font-weight: bold;
+  outline: none;
+}
+
+.loading {
+  color: #b2bec3;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #ff7675;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.carousel {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: nowrap;
+  flex: 1;
+  min-height: 350px;
+  margin-right: 140px;
+  position: relative;
+}
+
+.carouselButton {
+  height: 48px;
+  width: 48px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #232526;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.carouselButtonLeft {
+  left: 0;
+}
+
+.carouselButtonRight {
+  right: 0;
+}
+
+.card {
+  border: none;
+
+  padding: 1.2rem;
+  border-radius: 18px;
+  min-width: 270px;
+  background: #292b2f;
+  flex: 0 0 270px;
+  transition: box-shadow 0.2s;
+  
+}
+
+.cardTitle {
+  font-size: 1.3rem;
+  border-bottom: 2px solid #00c6fb;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1rem;
+  color: #00c6fb;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-align: center;
+  background: #232526;
+  
+}
+
+.taskList {
+  list-style: none;
+  padding-left: 0;
+}
+
+
+.taskItem {
+  background: #23272b;
+  padding: 1.1rem 1.3rem;
+  margin: 1.1rem 0;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.13rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-align: left;
+  border: 2.5px solid #2e9fd6;
+  box-shadow: none;
+  transition: border-color 0.18s, background 0.18s;
+  position: relative;
+  z-index: 1;
+}
+
+.taskItem:hover {
+  background: #26313a;
+  border-color: #00c6fb;
+}
+.taskItem:hover {
+  box-shadow: 0 6px 24px 0 rgba(0,198,251,0.22), 0 2px 8px 0 rgba(35,37,38,0.18);
+  border-left: 6px solid #00ffb4;
+}
+.machineName {
+  color: #00c6fb;
+  font-weight: bold;
+  font-size: 1.13rem;
+}
+
+.taskTitle {
+  color: #fff;
+  font-weight: normal;
+}
+
+.checkItem {
+  color: #fff;
+}
+
+.summaryPanel {
+  min-width: 120px;
+  max-width: 160px;
+  border-left: 4px solid #00c6fb;
+  padding: 1rem 0.7rem;
+  background: #232526;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(0,198,251,0.08);
+  border-radius: 0 18px 18px 0;
+}
+
+.summaryTitle {
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  color: #00c6fb;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.summaryList {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: bold;
+}
+
+.summaryAssignee {
+  margin-bottom: 0.7rem;
+  text-align: center;
+}
+
+.summaryAssigneeName {
+  color: #00c6fb;
+}
+
+.summaryTaskCount {
+  color: #00ffb4;
+}
