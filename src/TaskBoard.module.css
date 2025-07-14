@@ -77,14 +77,31 @@
   font-size: 1.2rem;
 }
 
-.carousel {
+
+/* レスポンシブ用: メインコンテンツラッパー */
+.mainContent {
   display: flex;
-  gap: 2rem;
-  flex-wrap: nowrap;
-  flex: 1;
-  min-height: 350px;
-  margin-right: 140px;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 60vh;
+  box-sizing: border-box;
+}
+
+.carousel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   position: relative;
+  margin-right: 0;
+}
+
+.cardList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  width: 100%;
 }
 
 .carouselButton {
@@ -95,7 +112,7 @@
   transform: translateY(-50%);
   background: #232526;
   color: #fff;
-  border: none;
+  border: 1px solid white;
   border-radius: 50%;
   font-size: 1.5rem;
   font-weight: bold;
@@ -117,9 +134,9 @@
 
   padding: 1.2rem;
   border-radius: 18px;
-  min-width: 270px;
+  min-width: 260px;
   background: #292b2f;
-  flex: 0 0 270px;
+  flex: 0 0 260px;
   transition: box-shadow 0.2s;
   
 }
@@ -184,17 +201,37 @@
 }
 
 .summaryPanel {
-  min-width: 120px;
-  max-width: 160px;
-  border-left: 4px solid #00c6fb;
-  padding: 1rem 0.7rem;
-  background: #232526;
-  position: absolute;
+  position: sticky;
+  top: 80px;
   right: 0;
-  top: 0;
-  height: 100%;
+  min-width: 220px;
+  max-width: 260px;
+  width: 22vw;
+  background: #232526;
+  border-left: 4px solid #00c6fb;
   box-shadow: 0 2px 8px rgba(0,198,251,0.08);
   border-radius: 0 18px 18px 0;
+  padding: 1.2rem 1rem;
+  height: fit-content;
+  z-index: 10;
+}
+
+@media (max-width: 900px) {
+  .mainContent {
+    flex-direction: column;
+  }
+  .summaryPanel {
+    position: static;
+    width: 100%;
+    max-width: none;
+    border-left: none;
+    box-shadow: none;
+    margin-top: 24px;
+    border-radius: 0 0 18px 18px;
+  }
+  .carousel {
+    margin-right: 0;
+  }
 }
 
 .summaryTitle {
