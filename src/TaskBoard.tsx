@@ -225,22 +225,31 @@ type CarouselProps = {
 const Carousel: React.FC<CarouselProps> = ({ groupedTasks, onTaskClick }) => {
   const assignees = Object.keys(groupedTasks);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [maxVisible, setMaxVisible] = useState(3);  // 初期列数
 
-  // 画面幅から最大表示数を計算（例: 1列260px+gap）
-  const getMaxVisible = () => {
-    if (typeof window === 'undefined') return 4;
-    const width = window.innerWidth;
-    if (width < 600) return 1;
-    if (width < 900) return 2;
-    if (width < 1200) return 3;
-    if (width < 1500) return 4;
-    return 5;
+  // サマリーリストの幅を取得して、タスクリストの最大列数を計算する
+  const getRemainingWidth = () => {
+    const summaryPanel = document.querySelector(`.${styles.summaryPanel}`) as HTMLElement;
+    const summaryPanelWidth = summaryPanel ? summaryPanel.offsetWidth : 0;
+    const totalWidth = window.innerWidth;  // 画面幅
+    const remainingWidth = totalWidth - summaryPanelWidth;  // 残りの幅
+      // ログ出力
+    console.log("Summary Panel Width:", summaryPanelWidth);
+    console.log("Total Width (Window Width):", totalWidth);
+    console.log("Remaining Width:", remainingWidth);
+    return remainingWidth;
   };
-  const [maxVisible, setMaxVisible] = useState(getMaxVisible());
+
+  const getMaxVisible = () => {
+    const remainingWidth = getRemainingWidth();
+    const cardWidth = 280 + 38.4;  // カードの幅（例: 260px + gap + paddingx2）
+    return Math.floor(remainingWidth / cardWidth);  // 残りの幅に収まる列数を計算
+  };
 
   React.useEffect(() => {
     const handleResize = () => setMaxVisible(getMaxVisible());
     window.addEventListener('resize', handleResize);
+    handleResize();  // 初回の設定
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -296,14 +305,13 @@ const Carousel: React.FC<CarouselProps> = ({ groupedTasks, onTaskClick }) => {
           >▶</button>
         </div>
       )}
-      <div className={styles.cardList}>
+
+      {/* カードリストのCSSを動的に変更 */}
+      <div className={styles.cardList} style={{ gridTemplateColumns: `repeat(${maxVisible}, 1fr)` }}>
         {visibleAssignees.map((assignee) => {
           const tasks = groupedTasks[assignee];
           return (
-            <div
-              key={assignee}
-              className={styles.card}
-            >
+            <div key={assignee} className={styles.card}>
               <h2 className={styles.cardTitle}>
                 {assignee}
               </h2>
@@ -337,6 +345,10 @@ const Carousel: React.FC<CarouselProps> = ({ groupedTasks, onTaskClick }) => {
     </div>
   );
 };
+
+
+
+
 // --- タスク詳細モーダル ---
 interface TaskDetailModalProps {
   task: ScheduledEvent;
