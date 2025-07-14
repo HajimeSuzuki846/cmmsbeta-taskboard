@@ -77,7 +77,6 @@
   font-size: 1.2rem;
 }
 
-<<<<<<< HEAD
 
 /* レスポンシブ用: メインコンテンツラッパー */
 .mainContent {
@@ -103,16 +102,6 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem;
   width: 100%;
-=======
-.carousel {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: nowrap;
-  flex: 1;
-  min-height: 350px;
-  margin-right: 140px;
-  position: relative;
->>>>>>> 888b532cfc5a1ba9038994c2e8ad367e48249d60
 }
 
 .carouselButton {
@@ -123,11 +112,7 @@
   transform: translateY(-50%);
   background: #232526;
   color: #fff;
-<<<<<<< HEAD
   border: 1px solid white;
-=======
-  border: none;
->>>>>>> 888b532cfc5a1ba9038994c2e8ad367e48249d60
   border-radius: 50%;
   font-size: 1.5rem;
   font-weight: bold;
@@ -149,15 +134,9 @@
 
   padding: 1.2rem;
   border-radius: 18px;
-<<<<<<< HEAD
   min-width: 260px;
   background: #292b2f;
   flex: 0 0 260px;
-=======
-  min-width: 270px;
-  background: #292b2f;
-  flex: 0 0 270px;
->>>>>>> 888b532cfc5a1ba9038994c2e8ad367e48249d60
   transition: box-shadow 0.2s;
   
 }
@@ -222,7 +201,6 @@
 }
 
 .summaryPanel {
-<<<<<<< HEAD
   position: sticky;
   top: 80px;
   right: 0;
@@ -254,19 +232,6 @@
   .carousel {
     margin-right: 0;
   }
-=======
-  min-width: 120px;
-  max-width: 160px;
-  border-left: 4px solid #00c6fb;
-  padding: 1rem 0.7rem;
-  background: #232526;
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  box-shadow: 0 2px 8px rgba(0,198,251,0.08);
-  border-radius: 0 18px 18px 0;
->>>>>>> 888b532cfc5a1ba9038994c2e8ad367e48249d60
 }
 
 .summaryTitle {
