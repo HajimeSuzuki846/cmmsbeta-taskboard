@@ -107,9 +107,6 @@
 .carouselButton {
   height: 48px;
   width: 48px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   background: #232526;
   color: #fff;
   border: 1px solid white;
@@ -119,6 +116,18 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
   cursor: pointer;
   z-index: 2;
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carouselNavRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .carouselButtonLeft {

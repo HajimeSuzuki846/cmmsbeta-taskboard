@@ -252,10 +252,18 @@ const Carousel: React.FC<CarouselProps> = ({ groupedTasks, onTaskClick }) => {
   return (
     <div className={styles.carousel}>
       {assignees.length > maxVisible && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 16 }}>
-          <button onClick={() => setCurrentIndex(prev => Math.max(prev - maxVisible, 0))} disabled={currentIndex === 0} className={styles.carouselButton}>◀</button>
+        <div className={styles.carouselNavRow}>
+          <button
+            onClick={() => setCurrentIndex(prev => Math.max(prev - maxVisible, 0))}
+            disabled={currentIndex === 0}
+            className={styles.carouselButton}
+          >◀</button>
           <span className={styles.carouselPage}>{currentPage} / {totalPages}</span>
-          <button onClick={() => setCurrentIndex(prev => Math.min(prev + maxVisible, assignees.length - maxVisible))} disabled={currentIndex >= assignees.length - maxVisible} className={styles.carouselButton}>▶</button>
+          <button
+            onClick={() => setCurrentIndex(prev => Math.min(prev + maxVisible, assignees.length - maxVisible))}
+            disabled={currentIndex >= assignees.length - maxVisible}
+            className={styles.carouselButton}
+          >▶</button>
         </div>
       )}
       <div className={styles.cardList} style={{ gridTemplateColumns: `repeat(${maxVisible}, 1fr)` }}>
